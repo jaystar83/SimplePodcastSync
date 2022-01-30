@@ -11,7 +11,7 @@ Simple script / executable to synchronise podcasts with the mp3 player ( - Pytho
 * copy "simplePodcastSync_Setup.json" to folder "/SimplePodcastSync  
 
 ### Configuration
-* using "simplePodcastSync_Setup.json"
+* using *simplePodcastSync_Setup.json*
     * "SourcePath": "C:/Users/*YourUserFolder*/Documents/gPodder/Downloads",
         - Source directory
     * "DestinationPath": "G:/Podcasts",
@@ -19,3 +19,8 @@ Simple script / executable to synchronise podcasts with the mp3 player ( - Pytho
     * "Mode": "strict"
         - strict: overwriting and deleting during synchronisation -> Source is master
         - smooth: just copying new files
+
+### Using the executbale
+* Copy the folder *SimplePodcastSync* to you local program folder
+* Configure the *simplePodcastSync_Setup.json* (see above)
+* for easy usage: Right Click - Send to - Desktop (Create shortcut)
