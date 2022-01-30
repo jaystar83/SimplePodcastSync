@@ -12,7 +12,7 @@ Simple script / executable to synchronise podcasts with the mp3 player ( - Pytho
 
 ### Configuration
 * using "simplePodcastSync_Setup.json"
-    * "SourcePath": "C:/Users/<YourUserFoleer>/Documents/gPodder/Downloads",
+    * "SourcePath": "C:/Users/*YourUserFolder*/Documents/gPodder/Downloads",
         - Source directory
     * "DestinationPath": "G:/Podcasts",
         - Destination on your device
