@@ -5,6 +5,10 @@ import sys
 import shutil
 import json
 
+import eyed3 
+#https://eyed3.readthedocs.io/en/latest/
+#Python >= 3.6 is required.
+
 with open('simplePodcastSync_Setup.json') as json_file:
     setupData = json.load(json_file)
 
@@ -151,23 +155,89 @@ for srcFolder in srcFolders:
                         break
                 else: ### If source content is not on device
                     print("    ### COPY: "+srcContent)
+                    audiofile= eyed3.load(dirSrc+srcFolder+"/"+srcContent)
+                    if(srcContent[len(srcContent)-1] == "3"):   # is mp3 file?
+                        tagsUpdated = FALSE
+                        audiofile= eyed3.load(dirSrc+srcFolder+"/"+srcContent)
+                        if(audiofile.tag == None):
+                            #audiofile.tag.TagHeader.version = eyed3.id3.headers.TagHeader(version=(2, 4, 0))
+                            audiofile.initTag()
+                            audiofile.tag.artist = srcFolder
+                            print("        ### Update artist: "+str(audiofile.tag.artist))
+                            audiofile.tag.album = srcFolder
+                            print("        ### Update album: "+str(audiofile.tag.album))
+                            audiofile.tag.title = srcContent[:len(srcContent)-4]
+                            print("        ### Update title: "+str(audiofile.tag.title))
+                            tagsUpdated = TRUE
+                        else:
+                            trackArtis = ""
+                            trackAlbum = ""
+                            trackTitle = ""
+                            if(audiofile.tag.artist == "None" or audiofile.tag.artist == "" or audiofile.tag.artist == ";"):
+#                                audiofile.tag.artist = srcFolder
+#                                print("        ### Update artist: "+str(audiofile.tag.artist))
+                                trackArtis = srcFolder
+                                print("        ### Update artist: "+trackArtis)
+                                tagsUpdated = TRUE
+                            else:
+                                trackArtis = audiofile.tag.artist
+
+                            if(audiofile.tag.album == None or audiofile.tag.album == "" or audiofile.tag.album == ";"):
+#                                audiofile.tag.album = srcFolder
+#                                print("        ### Update album: "+str(audiofile.tag.album))
+                                trackAlbum = srcFolder
+                                print("        ### Update album: "+trackAlbum)
+                                tagsUpdated = TRUE
+                            else:
+                                trackAlbum = audiofile.tag.album
+
+                            if(audiofile.tag.title == None or audiofile.tag.title == "" or audiofile.tag.title == ";"):
+#                                audiofile.tag.title = srcContent[:len(srcContent)-4]
+#                                print("        ### Update title: "+str(audiofile.tag.title))
+                                trackTitle = srcContent[:len(srcContent)-4]
+                                print("        ### Update title: "+trackTitle)
+                                tagsUpdated = TRUE
+                            else:
+                                trackTitle = audiofile.tag.title
+
+                        if(tagsUpdated):
+                            audiofile.initTag()
+                            audiofile.tag.artist = trackArtis
+                            audiofile.tag.album = trackAlbum
+                            audiofile.tag.title = trackTitle
+                            audiofile.tag.save()
+
                     shutil.copyfile(dirSrc+srcFolder+"/"+srcContent, dirDest+destFolder+"/"+srcContent)
             
-            ### Delete device content which is not in sourec
-            for destContent in destFolderContent:
-                ### if the file is the *.POS (position) -> skip
-                if(destContent[len(destContent)-1] != "S" ): 
-                    ### ELSE -> check if device file is available at source directory
-                    for srcContent in srcFolderContent:
-                        if (srcContent == destContent):
-                            break
-                    else:
-                        try:
-                            print("    #### REMOVE: " + destContent)
-                            os.remove(dirDest+destFolder+"/"+destContent)
-                        except OSError as e:
-                            print(f"    ### Error:{ e.strerror}")
-            break 
+            ### Delete device content which is not in source
+            if(mode != "smooth"):
+                for destContent in destFolderContent:
+                    ### if the file is the *.POS (position) -> skip
+                    if(destContent[len(destContent)-1] != "S" ): 
+                        ### ELSE -> check if device file is available at source directory
+                        for srcContent in srcFolderContent:
+                            if (srcContent == destContent):
+                                break
+                        else:
+                            try:
+                                fileName = dirDest+destFolder+"/"+destContent
+                                posiFileName_1 = fileName[:len(fileName)-3] + "POS"                          
+                                posiFileName_2 = fileName[:len(fileName)-3] + "poa"                          
+
+                                print("    #### REMOVE: " + destContent)
+                                os.remove(fileName)
+
+                                # also remove postion files (*.POS)  
+                                if(os.path.isfile(posiFileName_1)):
+                                    print("    #### REMOVE: " + destContent[:len(destContent)-3]+"POS")
+                                    os.remove(posiFileName_1)
+                                if(os.path.isfile(posiFileName_2)):
+                                    print("    #### REMOVE: " + destContent[:len(destContent)-3]+"pos")
+                                    os.remove(posiFileName_2)
+
+                            except OSError as e:
+                                print(f"    ### Error:{ e.strerror}")
+                break 
     ### source content not on device -> copy source folder
     else:
         print("### New podcast -> COPY: " + srcFolder)
