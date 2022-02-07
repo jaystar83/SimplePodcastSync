@@ -1,9 +1,0 @@
-{
-    "__comment" : "SourcePath is the folder which contains the podcast folders",
-    "SourcePath": "C:/Users/ExampleUser/Documents/gPodder/Downloads",
-    "__comment" : "DestinationPath is the podcast folder on the device ",
-    "DestinationPath": "G:/Podcasts",
-    "__comment" : "Mode == strict -> raw syn -> also deleting files",
-    "__comment" : "Mode == smooth -> only new files are copied",
-    "Mode": "strict"
-}
