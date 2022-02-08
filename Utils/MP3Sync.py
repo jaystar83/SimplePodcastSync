@@ -34,6 +34,14 @@ def resizeAlbumFolder(InFile, OutFile, NewSize):
     #im = img_as_ubyte(im)
     im.save(OutFile)
 
+def resizeAlbumCover_pngInput(InFile, OutFile, NewSize):
+    im = Image.open(InFile)
+    im = im.convert('RGB')
+    im = im.resize((NewSize, NewSize))
+    #im = img_as_ubyte(im)
+    im.save(OutFile)
+
+
 '''
 from skimage.transform import resize
 from skimage.io import imread
@@ -96,18 +104,14 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode):
             destFolderContent = readFolderObjects(DestDir+destFolder)
             ### 2. Else, sync content to device    ########
             tempFolderPic = ""
-            tempFolderPic_jpg = False
-            tempFolderPic_png = False
 
             if(checkPath(SrcDir+SrcFolder+"/folder.jpg")):
                 tempFolderPic = SrcDir+SrcFolder+"/folder_temp.jpg"
-                tempFolderPic_jpg = True
                 resizeAlbumFolder(SrcDir+SrcFolder+"/folder.jpg", tempFolderPic, PicSize)
 
             if(checkPath(SrcDir+SrcFolder+"/folder.png")):
-                tempFolderPic = SrcDir+SrcFolder+"/folder_temp.png"
-                resizeAlbumFolder(SrcDir+SrcFolder+"/folder.png", tempFolderPic, PicSize)
-                tempFolderPic_png = True
+                tempFolderPic = SrcDir+SrcFolder+"/folder_temp.jpg"
+                resizeAlbumCover_pngInput(SrcDir+SrcFolder+"/folder.png", tempFolderPic, PicSize)
 
             for srcContent in srcFolderContent:
                 ### 2.1 Check is dest content is up tp date
@@ -182,11 +186,8 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode):
                             tempAudiofile.tag.track_num = trackNo
                             tempAudiofile.tag.genre = trackGenre
 
-                        if(tempFolderPic_jpg):
-                            tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
-                        if(tempFolderPic_png):
-                            tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/png')
-
+                        tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
+ 
                         tempAudiofile.tag.save()
 
                         shutil.copyfile(SrcDir+SrcFolder+"/"+"temp.sps", DestDir+destFolder+"/"+srcContent)
@@ -204,13 +205,23 @@ def cleanupFolder(SrcDir, SrcFolder, DestDir, DestFolder):
     destFolderContent = readFolderObjects(DestDir+DestFolder)        
     srcFolderContent = readFolderObjects(SrcDir+SrcFolder)
     for destContent in destFolderContent:
-        for srcContent in srcFolderContent:
-            if(destContent == srcContent):
-                break
-        else:
-            print("    #### DELETING: " + destContent)
-            os.remove(DestDir+DestFolder+"/"+destContent)
+        if( destContent.endswith(".mp3") or destContent.endswith(".MP3") ):
+            for srcContent in srcFolderContent:
+                if(destContent == srcContent):
+                    break
+            else:
+                
+                print("    #### DELETING: " + destContent)
+                destFile = DestDir+DestFolder+"/"+destContent
+                filename, extension = os.path.splitext(destFile)
+                
+                if( checkPath(filename+".POS") ):
+                    os.remove(filename+".POS")
 
+                if( checkPath(filename+".pos") ):
+                    os.remove(filename+".pos")
+                    
+                os.remove(destFile)
 
 #-------------------------------------------------------------------------------
 ### Check device content and delete folders/epsiodes that are not in source ####

@@ -15,15 +15,23 @@ if __name__ == "__main__":
 
     ### Check if source path available  ################################
     if(Setup.checkPath(config.SrcDir) == False):
-        print("### Source not found: "+config.SrcDir+" -> EXIT")
+        print("### Source not found: "+config.SrcDir)
+        input("\r\n### -> EXIT\r\nPress Enter to close ...")
         sys.exit(0)
     ### Read out elements in source folder  ############################
     srcFolders = MP3Sync.readFolderObjects(config.SrcDir)
 
     ### Check if destination path available #############################
     if(Setup.checkPath(config.DestDir) == False):
-        print("### Source not found: "+config.DestDir+" -> creating Folder!")
-        os.mkdir(config.DestDir)       
+        print("### Source not found: "+config.DestDir+" -> creating folder!")
+        try:
+            os.mkdir(config.DestDir)       
+        except (IOError, KeyError) as e:
+            print('    ###: Could not create folder!')
+            print('    ###: ERROR: '+str(e))
+            input("\r\n### -> EXIT\r\nPress Enter to close ...")
+            sys.exit(0)
+
     ### Read out elements in source folder  ############################
     destFolders = MP3Sync.readFolderObjects(config.DestDir)
         
