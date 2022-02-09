@@ -42,7 +42,8 @@ def checkPath(dirname):
 
 def readSetupData(FileName):
     if(checkPath(FileName) == False):
-        print("### Setup file *"+FileName+"* not found! -> EXIT")
+        print("### Setup file *"+FileName+"* not found!")
+        input("\r\n### -> EXIT\r\nPress Enter to close ...")
         sys.exit(0)
     else:
         data = SetupData()

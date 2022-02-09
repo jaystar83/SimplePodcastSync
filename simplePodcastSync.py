@@ -37,7 +37,8 @@ if __name__ == "__main__":
         
     ### Check if elements available in source folder    ################
     if len(srcFolders) == 0:
-        print("### Source folder empty! -> EXIT")
+        print("### Source folder empty!")
+        input("\r\n### -> EXIT\r\nPress Enter to close ...")
         sys.exit(0)
     '''else:
         print("### Podcasts to sync:")
