@@ -84,7 +84,7 @@ def syncMP3content(SrcDir, SrcFolders, DestDir, DestFolders, PicSize, SyncMode):
         else:
             ### 2.1 If Source does NOT exist on device -> create 
             if(checkPath(DestDir+srcFolder)==False):
-                print("    ### CREATING episodes folder on decice")
+                print("    ### CREATING episodes folder on device")
                 os.mkdir(DestDir+srcFolder)
                 DestFolders.append(srcFolder)
 
