@@ -41,19 +41,6 @@ def resizeAlbumCover_pngInput(InFile, OutFile, NewSize):
     #im = img_as_ubyte(im)
     im.save(OutFile)
 
-
-'''
-from skimage.transform import resize
-from skimage.io import imread
-from skimage.io import imsave
-from skimage.util import img_as_ubyte
-
-def resizeAlbumFolder(InFile, OutFile, NewSize):
-    im = imread(InFile)
-    im = resize(im, (NewSize, NewSize))
-    im = img_as_ubyte(im)
-    imsave(OutFile,im)
-'''
 ####################################################################
 ### Function to adapt and copy new content  ########################
 ####################################################################
@@ -84,15 +71,11 @@ def syncMP3content(SrcDir, SrcFolders, DestDir, DestFolders, PicSize, SyncMode):
         else:
             ### 2.1 If Source does NOT exist on device -> create 
             if(checkPath(DestDir+srcFolder)==False):
-                print("    ### CREATING episodes folder on device")
+                print("    ### CREATING episodes folder on decice")
                 os.mkdir(DestDir+srcFolder)
                 DestFolders.append(srcFolder)
 
             copyNewEpisodes(SrcDir, srcFolder, DestDir, DestFolders, PicSize, SyncMode)
-
-#    if(SyncMode == "strict"):
-#        cleanupDevice(SrcDir, SrcFolders, DestDir, DestFolders)
-
 
 #-------------------------------------------------------------------------------
 ### Check source and device and copy episode if not on device   ################
