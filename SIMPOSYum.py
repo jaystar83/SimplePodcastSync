@@ -8,7 +8,7 @@ from Utils import MP3Sync
 if __name__ == "__main__":
 
     config = Setup.SetupData()
-    config.load('SIMPOSYum_Setup.json')
+    config.load('SIMPOSYum_Setup.json', WinActive=False)
 
     print("### Source:      - " + config.SrcDir)
     print("### Destination: - " + config.DestDir)

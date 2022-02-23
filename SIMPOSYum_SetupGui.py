@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+import sys
+import os
 
 import tkinter as tk
-from tkinter import LEFT, RIGHT, ttk
+from tkinter import E, LEFT, RIGHT, ttk
 from tkinter import filedialog
 from tkinter import messagebox
 
@@ -17,43 +19,98 @@ if (__name__ == "__main__"):
 
     def getSrcFolderPath():
         selectedSrcPath = str(filedialog.askdirectory())
-        configTemp = Setup.SetupData()
-        configTemp.load(tempConfigFileName)
-        configTemp.SrcDir = selectedSrcPath
-        configTemp.save(tempConfigFileName)
-        tempSrcFolderLabel.config(text = selectedSrcPath)
+        if(selectedSrcPath == "" or selectedSrcPath == 0):
+            return -1
+        else:
+            configTemp = Setup.SetupData()
+            errorCode = configTemp.load(tempConfigFileName, WinActive=True)
+            check_LoadConfigError(errorCode, WinActive=True)
+            if(errorCode == "E_OK"):
+                configTemp.SrcDir = selectedSrcPath
+                errorCode = configTemp.save(tempConfigFileName, WinActive=True)
+                check_SaveConfigError(errorCode,WinActive=True)
+                if(errorCode == "E_OK"):
+                    tempSrcFolderLabel.config(text = " -> " + selectedSrcPath)
+                    return 0               
+        return -1
 
     def getDestFolderPath():
         selectedDestPath = str(filedialog.askdirectory())
-        print("selectedDestPath: "+selectedDestPath)
-        configTemp = Setup.SetupData()
-        configTemp.load(tempConfigFileName)
-        configTemp.DestDir = selectedDestPath
-        configTemp.save(tempConfigFileName)
-        tempDestFolderLabel.config(text = selectedDestPath)
+        if(selectedDestPath == "" or selectedDestPath == 0):
+            return -1
+        else:
+            configTemp = Setup.SetupData()
+            errorCode = configTemp.load(tempConfigFileName, WinActive=True)
+            check_LoadConfigError(errorCode, WinActive=True)
+            if(errorCode == "E_OK"):
+                configTemp.DestDir = selectedDestPath
+                errorCode = configTemp.save(tempConfigFileName, WinActive=True)
+                check_SaveConfigError(errorCode,WinActive=True)
+                if(errorCode == "E_OK"):
+                    tempDestFolderLabel.config(text = " -> " + selectedDestPath)
+                    return 0                
+        return -1
 
     def syncModeUpdate():
         configTemp = Setup.SetupData()
-        configTemp.load(tempConfigFileName)
-        configTemp.SyncMode = tempSyncMode.get()
-        configTemp.save(tempConfigFileName)
-        modeStatusLabel.config(text="Current SyncMode: "+tempSyncMode.get())
+        errorCode = configTemp.load(tempConfigFileName, WinActive=True)
+        check_LoadConfigError(errorCode, WinActive=True)
+        if(errorCode == "E_OK"):
+            configTemp.SyncMode = tempSyncMode.get()
+            errorCode = configTemp.save(tempConfigFileName, WinActive=True)
+            check_SaveConfigError(errorCode,WinActive=True)
+            if(errorCode == "E_OK"):
+                tempSyncModeLabel.config(text=" -> Selected SyncMode: "+tempSyncMode.get())
         
     def saveConfigData(SrcFile, DestFile):
         ret = copyFile_save(SrcFile, DestFile)
-        if(ret == 'OK'):
-           messagebox.showinfo("Config saved successfully")
+        if(ret == 'E_OK'):
+            messagebox.showinfo("Save config file","Config saved successfully")
+            configTemp = Setup.SetupData()
+            errorCode = configTemp.load(tempConfigFileName, WinActive=True)
+            check_LoadConfigError(errorCode, WinActive=True)
+            if(errorCode == "E_OK"):
+                confSrcFolderLabel.config(text= 'Configured source -> ' + configTemp.SrcDir)
+                confDestFolderLabel.config(text= 'Configured source -> ' + configTemp.DestDir)
+                confSyncModeLabel.config(text='Configured synchronisation mode -> ' + configTemp.SyncMode)
         else:
             messagebox.showerror("Save config file error", ret)
+
+    def check_LoadConfigError(errorCode, WinActive):
+        if(errorCode != "E_OK"):
+            if(errorCode == "E_FileNotFound"):
+                messagebox.showerror("Load config file error", "File not found!")
+            elif(errorCode == "E_SrcPathInvalid"):
+                messagebox.showerror("Load config file error", "Source path invalid!")
+            elif(errorCode == "E_DestPathInvalid"):
+                messagebox.showerror("Load config file error", "Destination path invalid!")
+            else:
+                messagebox.showerror("Load config file error", "Could not load Setup Data!")
+
+            if(WinActive == False):
+                sys.exit(0)
+                #win.quit()
+
+    def check_SaveConfigError(errorCode, WinActive):
+        if(errorCode != "E_OK"):
+            if(errorCode == "E_FileNotFound"):
+                messagebox.showerror("Save config - file error", "File not found!")
+            else:
+                messagebox.showerror("Load config - file error", "Could not save Setup Data!")
+
+            if(WinActive == False):
+                sys.exit(0)
 
     winHide("SIMPOSYum_SetupGui.exe")
 
     config = Setup.SetupData()
-    config.load(configFileName)
+    errorCode = config.load( configFileName, WinActive=False)
+    check_LoadConfigError(errorCode, False)
 
-    ret = copyFile_save(configFileName, tempConfigFileName)
-    if(ret != 'OK'):
-        messagebox.showerror("File save error", ret)
+    errorCode = copyFile_save(configFileName, tempConfigFileName)
+    if(errorCode != 'E_OK'):
+        messagebox.showerror("File save error", errorCode)
+        sys.exit(0)
 
     win = tk.Tk()
     win.title('SIMPOSYum Config GUI')
@@ -118,14 +175,14 @@ if (__name__ == "__main__"):
 ################################################################
     frame3 = tk.Frame(win)
     frame3.place(relx=0.05, rely=0.5, relwidth=0.9, relheight=0.05 )
-    modeLabel = tk.Label(frame3, text= 'Synchronisation mode: ')
-    modeLabel.pack(side=LEFT)
+    confSyncModeLabel = tk.Label(frame3, text= 'Configured synchronisation mode -> ' + config.SyncMode)
+    confSyncModeLabel.pack(side=LEFT)
 
     frame33 = tk.Frame(win)
     frame33.place(relx=0.05, rely=0.55, relwidth=0.9, relheight=0.15)
 
     tempSyncMode = tk.StringVar(frame33, config.SyncMode)
-    modeStatusLabel = tk.Label(frame33, text="Current SyncMode: "+tempSyncMode.get())
+    tempSyncModeLabel = tk.Label(frame33, text=" - Selected SyncMode -> "+tempSyncMode.get())
             
     check_button = tk.Checkbutton(frame33, text="strict", var=tempSyncMode, onvalue="strict", offvalue="smooth", command=syncModeUpdate)
     if(tempSyncMode.get()=="strict"):
@@ -133,7 +190,7 @@ if (__name__ == "__main__"):
     else:
         check_button.deselect()
     check_button.pack(side=LEFT)
-    modeStatusLabel.pack(side=RIGHT)
+    tempSyncModeLabel.pack(side=LEFT)
 
 ################################################################
 ### Frame 4/5 - Lower Control Buttons ##########################
@@ -149,12 +206,25 @@ if (__name__ == "__main__"):
     frame5.place(relx=0.05, rely=0.9, relwidth=0.9, relheight=0.1)
 
     exitBttn = tk.Button(frame5, text="Close", command=win.quit)
-    exitBttn.pack(side=RIGHT)
+#    exitBttn.pack(side=RIGHT)
+    exitBttn.place(relx=1.0, rely=0.25, anchor=tk.E)
 
     def saveConfigWithButton():
         saveConfigData(tempConfigFileName, configFileName)
 
     saveBttn = tk.Button(frame5, text="Save", command=saveConfigWithButton)
-    saveBttn.pack(side=LEFT)
+    #saveBttn.pack(side=LEFT)
+    saveBttn.place(relx=0.0, rely=0.25, anchor=tk.W)
+
+    def runSync():
+#        os.system("SIMPOSYum.exe")
+#        import subprocess
+#        print(subprocess.call("SIMPOSYum.exe", shell=True))  
+        print(os.startfile("SIMPOSYum"))  
+
+    runBttn = tk.Button(frame5, text="Run Sync", command=runSync)
+#    runBttn.pack(side=tk.BOTTOM)
+    runBttn.place(relx=0.5, rely=0.25, anchor=tk.CENTER)
+
 
     win.mainloop()

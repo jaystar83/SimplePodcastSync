@@ -5,6 +5,8 @@ import json
 import shutil
 from tkinter import messagebox
 
+errorCode = "E_OK"  ### No error
+
 class SetupData():
     '''
     def __init__(self, SrcDir, DestDir, SyncMode, CoverSize):       
@@ -24,16 +26,21 @@ class SetupData():
         self.SyncMode = SyncMode
         self.CoverSize = CoverSize
   
-    def load(self, Filename):
+    def load(self, Filename, WinActive):
         data = SetupData()
-        data = readSetupData(Filename)
-        self.SrcDir = data.SrcDir
-        self.DestDir = data.DestDir
-        self.SyncMode = data.SyncMode
-        self.CoverSize = data.CoverSize
+        data = readSetupData(Filename, WinActive)
+        if(errorCode == "E_OK"):
+            self.SrcDir = data.SrcDir
+            self.DestDir = data.DestDir
+            self.SyncMode = data.SyncMode
+            self.CoverSize = data.CoverSize
 
-    def save(self, Filename):
-        writeSetupData(self, Filename)
+        return errorCode
+
+    def save(self, Filename, WinActive):
+        writeSetupData(self, Filename, WinActive)
+        return errorCode
+        
         
   
 ### Check if source path available  ################################
@@ -45,11 +52,15 @@ def checkPath(dirname):
         return True
 
 
-def readSetupData(FileName):
+def readSetupData(FileName, WinActive):
+    errorCode = "E_OK"
     if(checkPath(FileName) == False):
-        print("### Setup file *"+FileName+"* not found!")
-        input("\r\n### -> EXIT\r\nPress Enter to close ...")
-        sys.exit(0)
+        if(WinActive):
+            errorCode = "E_FileNotFound"
+        else:
+            print("### Setup file *"+FileName+"* not found!")
+            input("\r\n### -> EXIT\r\nPress Enter to close ...")
+            sys.exit(0)
     else:
         data = SetupData()
         with open(FileName) as json_file:
@@ -59,14 +70,20 @@ def readSetupData(FileName):
             
             ### Check if filename are available ################################
             if(data.SrcDir == "" or data.SrcDir == 0):
-                print("### Source path invalid!")
-                input("\r\n### -> EXIT\r\nPress Enter to close ...")
-                sys.exit(0)
+                if(WinActive):
+                    errorCode = "E_SrcPathInvalid"
+                else:
+                    print("### Source path invalid!")
+                    input("\r\n### -> EXIT\r\nPress Enter to close ...")
+                    sys.exit(0)
 
             if(data.DestDir == "" or data.DestDir == 0):
-                print("### Destination path invalid!")
-                input("\r\n### -> EXIT\r\nPress Enter to close ...")
-                sys.exit(0)
+                if(WinActive):
+                    errorCode = "E_DestPathInvalid"
+                else:
+                    print("### Destination path invalid!")
+                    input("\r\n### -> EXIT\r\nPress Enter to close ...")
+                    sys.exit(0)
 
             ### Check end of pathes are valid and correct   ####################
             if data.SrcDir[len(data.SrcDir)-1] != "/":
@@ -80,11 +97,15 @@ def readSetupData(FileName):
         json_file.close()
         return data
 
-def writeSetupData(Data, FileName):
+def writeSetupData(Data, FileName, WinActive):
+    errorCode = "E_OK"
     if(checkPath(FileName) == False):
-        print("### Setup file *"+FileName+"* not found!")
-        input("\r\n### -> EXIT\r\nPress Enter to close ...")
-        sys.exit(0)
+        if(WinActive):
+            errorCode = "E_FileNotFound"
+        else:
+            print("### Setup file *"+FileName+"* not found!")
+            input("\r\n### -> EXIT\r\nPress Enter to close ...")
+            sys.exit(0)
     else:
  #       jsonData
         with open(FileName) as json_file:
@@ -120,7 +141,7 @@ def writeSetupData(Data, FileName):
 def copyFile_save(SrcFile, DestFile):
     try:
         shutil.copyfile(SrcFile, DestFile)
-        return 'OK'
+        return 'E_OK'
     except shutil.Error as e:
         err = 'Error: %s' % e
         print(err)
