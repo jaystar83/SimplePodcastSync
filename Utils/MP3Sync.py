@@ -54,13 +54,13 @@ from eyed3.id3.frames import ImageFrame # to change mp3 file album pic
 ### Synchronising the MP3 content in source with the device ####################
 def syncMP3content(SrcDir, SrcFolders, DestDir, DestFolders, PicSize, SyncMode):
     for srcFolder in SrcFolders:
-        print("### Syncronsing: "+srcFolder)
+        print("### SYNC: "+srcFolder)
         srcFolderContent = readFolderObjects(SrcDir+srcFolder)
 
         ### 1. Check whether source folder contains epidsodes
         if(srcFolderContent == 0 or ( True == ( (len(srcFolderContent)==1) and srcFolderContent[0][len(srcFolderContent[0])-1] == "g") ) ):
             ### 1.1 No Epsiodes in source folder
-            print("    ### Source is EMPTY")
+            print("    ### EMPTY source folder")
             if(SyncMode == "strict"):
                 if(checkPath(DestDir+srcFolder)==True):
                     deletFolder(DestDir, srcFolder)
@@ -96,16 +96,19 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode):
                 tempFolderPic = SrcDir+SrcFolder+"/folder_temp.jpg"
                 resizeAlbumCover_pngInput(SrcDir+SrcFolder+"/folder.png", tempFolderPic, PicSize)
 
+            noUpdateForThisPodcast = True
+
             for srcContent in srcFolderContent:
                 ### 2.1 Check is dest content is up tp date
                 for destContent in destFolderContent:
                     if (destContent == srcContent):
-                        print("    ### UP TO DATE: "+ srcContent)
+#                        print("    ### UP TO DATE: "+ srcContent)
                         break
 
                 ### 2.2 If source content is not on device
                 else: 
                     if(srcContent[len(srcContent)-1] == "3"):   # is mp3 file?
+                        noUpdateForThisPodcast = False
                         print("    ### COPY: "+srcContent)
                         ### Create temp file
                         shutil.copyfile(SrcDir+SrcFolder+"/"+srcContent, SrcDir+SrcFolder+"/"+"temp.sps")
@@ -176,6 +179,9 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode):
                         shutil.copyfile(SrcDir+SrcFolder+"/"+"temp.sps", DestDir+destFolder+"/"+srcContent)
                         os.remove(SrcDir+SrcFolder+"/"+"temp.sps")
 
+            if(noUpdateForThisPodcast):  
+                print("    ### NO NEW EPISODES")
+     
             if(tempFolderPic != ""):
                 os.remove(tempFolderPic)
 
