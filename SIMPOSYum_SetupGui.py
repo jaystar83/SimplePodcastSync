@@ -101,7 +101,7 @@ if (__name__ == "__main__"):
             if(WinActive == False):
                 sys.exit(0)
 
-    winHide("SIMPOSYum_SetupGui.exe")
+#    winHide("SIMPOSYum_SetupGui.exe")
 
     config = Setup.SetupData()
     errorCode = config.load( configFileName, WinActive=False)
