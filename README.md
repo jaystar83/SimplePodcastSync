@@ -7,7 +7,7 @@ Simple script / executable to synchronise podcasts with the mp3 player ( - Pytho
   * ``` > pip3 install pyinstaller ```
 * use pyinstaller to create *.exe
   * run batch file to create *.exe files and add files to App folder
-  * ``` > build_exe.bat
+  * ``` > build_exe.bat ```
 * This will create folder "SIMPOSYum_EXE" including all necessary files  
 
 ### Configuration
