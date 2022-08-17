@@ -114,68 +114,71 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode):
                         shutil.copyfile(SrcDir+SrcFolder+"/"+srcContent, SrcDir+SrcFolder+"/"+"temp.sps")
                         tempAudiofile= eyed3.load(SrcDir+SrcFolder+"/"+"temp.sps")
 
-                        if(tempAudiofile.tag == None):
-                            tempAudiofile.initTag()
+                        try:
+                            if(tempAudiofile.tag == None):
+                                tempAudiofile.initTag()
 
-                            #change mp3 file album cover if "folder.jpg/png" is available
-                            tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open('cover.jpg','rb').read(), 'image/jpeg')
+                                #change mp3 file album cover if "folder.jpg/png" is available
+                                #tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open('cover.jpg','rb').read(), 'image/jpeg')
 
-                            #change file info
-                            tempAudiofile.tag.artist = SrcFolder
-                            print("        ### Update artist: "+str(tempAudiofile.tag.artist))
-                            tempAudiofile.tag.album = SrcFolder
-                            print("        ### Update album: "+str(tempAudiofile.tag.album))
-                            tempAudiofile.tag.title = srcContent[:len(srcContent)-4]
-                            print("        ### Update title: "+str(tempAudiofile.tag.title))
+                                #change file info
+                                tempAudiofile.tag.artist = SrcFolder
+                                print("        ### Update artist: "+str(tempAudiofile.tag.artist))
+                                tempAudiofile.tag.album = SrcFolder
+                                print("        ### Update album: "+str(tempAudiofile.tag.album))
+                                tempAudiofile.tag.title = srcContent[:len(srcContent)-4]
+                                print("        ### Update title: "+str(tempAudiofile.tag.title))
+                                tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
+                                tempAudiofile.tag.save()
 
-                        else:
-
-                            #change file info
-                            trackArtis = ""
-                            trackAlbum = ""
-                            trackTitle = ""
-                            trackNo = None
-                            trackGenre = ""
-                            if(tempAudiofile.tag.artist == None or tempAudiofile.tag.artist == "" or tempAudiofile.tag.artist == ";"):
-                                trackArtis = SrcFolder
-                                print("        ### Update artist: "+trackArtis)
                             else:
-                                trackArtis = tempAudiofile.tag.artist
+                                #change file info
+                                trackArtis = ""
+                                trackAlbum = ""
+                                trackTitle = ""
+                                trackNo = None
+                                trackGenre = ""
+                                if(tempAudiofile.tag.artist == None or tempAudiofile.tag.artist == "" or tempAudiofile.tag.artist == ";"):
+                                    trackArtis = SrcFolder
+                                    print("        ### Update artist: "+trackArtis)
+                                else:
+                                    trackArtis = tempAudiofile.tag.artist
 
-                            if(tempAudiofile.tag.album == None or tempAudiofile.tag.album == "" or tempAudiofile.tag.album == ";"):
-                                trackAlbum = SrcFolder
-                                print("        ### Update album: "+trackAlbum)
-                            else:
-                                trackAlbum = tempAudiofile.tag.album
+                                if(tempAudiofile.tag.album == None or tempAudiofile.tag.album == "" or tempAudiofile.tag.album == ";"):
+                                    trackAlbum = SrcFolder
+                                    print("        ### Update album: "+trackAlbum)
+                                else:
+                                    trackAlbum = tempAudiofile.tag.album
 
-                            if(tempAudiofile.tag.title == None or tempAudiofile.tag.title == "" or tempAudiofile.tag.title == ";"):
-                                trackTitle = srcContent[:len(srcContent)-4]
-                                print("        ### Update title: "+trackTitle)
-                            else:
-                                trackTitle = tempAudiofile.tag.title
+                                if(tempAudiofile.tag.title == None or tempAudiofile.tag.title == "" or tempAudiofile.tag.title == ";"):
+                                    trackTitle = srcContent[:len(srcContent)-4]
+                                    print("        ### Update title: "+trackTitle)
+                                else:
+                                    trackTitle = tempAudiofile.tag.title
 
-                            if(tempAudiofile.tag.track_num[0] == None or tempAudiofile.tag.track_num[0] == "" or tempAudiofile.tag.track_num[0] == ";"):
-                                print("        ### No tack number in: "+trackTitle)
-                            else:
-                                trackNo = int(tempAudiofile.tag.track_num[0])
+                                if(tempAudiofile.tag.track_num[0] == None or tempAudiofile.tag.track_num[0] == "" or tempAudiofile.tag.track_num[0] == ";"):
+                                    print("        ### No tack number in: "+trackTitle)
+                                else:
+                                    trackNo = int(tempAudiofile.tag.track_num[0])
 
-                            if(tempAudiofile.tag.genre == None or tempAudiofile.tag.genre == "" or tempAudiofile.tag.genre == ";"):
-                                trackGenre = "Podcast"
-                                print("        ### Update genre: "+trackGenre)
-                            else:
-                                trackGenre = tempAudiofile.tag.genre
+                                if(tempAudiofile.tag.genre == None or tempAudiofile.tag.genre == "" or tempAudiofile.tag.genre == ";"):
+                                    trackGenre = "Podcast"
+                                    print("        ### Update genre: "+trackGenre)
+                                else:
+                                    trackGenre = tempAudiofile.tag.genre
 
-                            tempAudiofile.initTag()
-                            tempAudiofile.tag.artist = trackArtis
-                            tempAudiofile.tag.album = trackAlbum
-                            tempAudiofile.tag.title = trackTitle
-                            tempAudiofile.tag.track_num = trackNo
-                            tempAudiofile.tag.genre = trackGenre
+                                tempAudiofile.initTag()
+                                tempAudiofile.tag.artist = trackArtis
+                                tempAudiofile.tag.album = trackAlbum
+                                tempAudiofile.tag.title = trackTitle
+                                tempAudiofile.tag.track_num = trackNo
+                                tempAudiofile.tag.genre = trackGenre
+                                tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
+                                tempAudiofile.tag.save()
 
-                        tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
+                        except:
+                            print("        ### No mp3 tag available, just copying: "+srcContent)
  
-                        tempAudiofile.tag.save()
-
                         shutil.copyfile(SrcDir+SrcFolder+"/"+"temp.sps", DestDir+destFolder+"/"+srcContent)
                         os.remove(SrcDir+SrcFolder+"/"+"temp.sps")
 
