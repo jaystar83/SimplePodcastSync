@@ -177,7 +177,7 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode):
                                 tempAudiofile.tag.save()
 
                         except:
-                            print("        ### No mp3 tag available, just copying: "+srcContent)
+                            print("        ### mp3 tag invalid, just copying: "+srcContent)
  
                         shutil.copyfile(SrcDir+SrcFolder+"/"+"temp.sps", DestDir+destFolder+"/"+srcContent)
                         os.remove(SrcDir+SrcFolder+"/"+"temp.sps")
