@@ -177,8 +177,25 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode):
                                 tempAudiofile.tag.save()
 
                         except:
-                            print("        ### mp3 tag invalid, just copying: "+srcContent)
- 
+                            try:
+                                tempAudiofile.initTag()
+                                print("        ### mp3 tag invalid -> creating tag information for "+srcContent)
+
+                                #change mp3 file album cover if "folder.jpg/png" is available
+                                #tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open('cover.jpg','rb').read(), 'image/jpeg')
+
+                                #change file info
+                                tempAudiofile.tag.artist = SrcFolder
+                                print("            ### Update artist: "+str(tempAudiofile.tag.artist))
+                                tempAudiofile.tag.album = SrcFolder
+                                print("            ### Update album: "+str(tempAudiofile.tag.album))
+                                tempAudiofile.tag.title = srcContent[:len(srcContent)-4]
+                                print("            ### Update title: "+str(tempAudiofile.tag.title))
+                                tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
+                                tempAudiofile.tag.save()
+                            except:
+                                print("        ### mp3 tag invalid, just copying: "+srcContent)
+     
                         shutil.copyfile(SrcDir+SrcFolder+"/"+"temp.sps", DestDir+destFolder+"/"+srcContent)
                         os.remove(SrcDir+SrcFolder+"/"+"temp.sps")
 
