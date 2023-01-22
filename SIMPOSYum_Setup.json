@@ -9,5 +9,7 @@
     "__comment" : "Mode == smooth -> only new files are copied",
     "Mode": "strict",
     "__comment" : "AlbumCoverSize Y x Y pixel e.g. 600x600",
-    "AlbumCoverSize": 600
+    "AlbumCoverSize": 600,
+    "__comment" : "AlbumCoverSize Y x Y pixel e.g. 600x600",
+    "JustCopy": "False"
 }

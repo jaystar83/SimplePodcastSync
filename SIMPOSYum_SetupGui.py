@@ -8,7 +8,8 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 from Utils import Setup
-from Utils.GuiSupport import winHide
+
+#from Utils.GuiSupport import winHide
 from Utils.Setup import copyFile_save
 
 

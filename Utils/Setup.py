@@ -19,12 +19,14 @@ class SetupData():
     DestDir:str = ""
     SyncMode:str = ""
     CoverSize:int = 0
+    JustCopy:str = ""
     
-    def init(self, SrcDir, DestDir, SyncMode, CoverSize):       
+    def init(self, SrcDir, DestDir, SyncMode, CoverSize, JustCopy):       
         self.SrcDir = SrcDir
         self.DestDir = DestDir
         self.SyncMode = SyncMode
         self.CoverSize = CoverSize
+        self.JustCopy = JustCopy
   
     def load(self, Filename, WinActive):
         data = SetupData()
@@ -34,6 +36,7 @@ class SetupData():
             self.DestDir = data.DestDir
             self.SyncMode = data.SyncMode
             self.CoverSize = data.CoverSize
+            self.JustCopy = data.JustCopy
 
         return errorCode
 
@@ -67,7 +70,6 @@ def readSetupData(FileName, WinActive):
             jsonData = json.load(json_file)
             data.SrcDir = jsonData['SourcePath']
             data.DestDir = jsonData['DestinationPath']
-            
             ### Check if filename are available ################################
             if(data.SrcDir == "" or data.SrcDir == 0):
                 if(WinActive):
@@ -93,6 +95,7 @@ def readSetupData(FileName, WinActive):
 
             data.SyncMode = jsonData['Mode']
             data.CoverSize = int(jsonData['AlbumCoverSize'])
+            data.JustCopy = jsonData['JustCopy']
         
         json_file.close()
         return data
@@ -119,6 +122,8 @@ def writeSetupData(Data, FileName, WinActive):
         ### Check end of pathes are valid and correct   ####################
         jsonData['Mode'] = Data.SyncMode
         jsonData['AlbumCoverSize'] = Data.CoverSize
+        jsonData['JustCopy'] = Data.JustCopy
+
 
         jsonData['__comment'] = "configuerd with Setup Gui"
 

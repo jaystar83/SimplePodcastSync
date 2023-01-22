@@ -48,7 +48,7 @@ if __name__ == "__main__":
     ####################################################################
     ### Sync with source    ############################################
     ####################################################################
-    MP3Sync.syncMP3content(config.SrcDir, srcFolders, config.DestDir, destFolders, config.CoverSize, config.SyncMode)
+    MP3Sync.syncMP3content(config.SrcDir, srcFolders, config.DestDir, destFolders, config.CoverSize, config.SyncMode, config.JustCopy)
 
     input("\r\n### FINISHED\r\nPress Enter to close ...")
     sys.exit(0)
