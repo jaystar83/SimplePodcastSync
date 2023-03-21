@@ -1,27 +1,8 @@
 #!/usr/bin/python
 import os
 from .Setup import checkPath
-
-####################################################################
-### Function to read out elements in a folder   ####################
-####################################################################
-def readFolderObjects(dirname, otype = "all"):
-    if (os.path.exists(dirname) == False or
-        os.path.isdir(dirname) == False or
-        os.access(dirname, os.R_OK) == False):
-        return False
-    else:
-        objects = os.listdir(dirname)
-        result = []
-        for objectname in objects:
-            objectpath = dirname + "/" + objectname
-            if (otype == "all" or
-                (otype == "dir"  and os.path.isdir(objectpath)  == True) or
-                (otype == "file" and os.path.isfile(objectpath) == True) or
-                (otype == "link" and os.path.islink(objectpath) == True)):
-                result.append(objectname)
-        result.sort()
-        return result
+from .m3uPlaylists import PlaylistGenerator
+from .fileOperations import readFolderObjects
 
 ####################################################################
 ### Function to prepare Episode cover   ############################
@@ -52,7 +33,10 @@ from eyed3.id3.frames import ImageFrame # to change mp3 file album pic
 
 #-------------------------------------------------------------------------------
 ### Synchronising the MP3 content in source with the device ####################
-def syncMP3content(SrcDir, SrcFolders, DestDir, DestFolders, PicSize, SyncMode, JustCopy):
+def syncMP3content(SrcDir, SrcFolders, DestDir, DestFolders, PicSize, SyncMode, JustCopy, CreatePLs, PLsDestDir):
+    if(CreatePLs == "True"):
+        plCreator =  PlaylistGenerator()
+
     for srcFolder in SrcFolders:
         print("### SYNC: "+srcFolder)
         srcFolderContent = readFolderObjects(SrcDir+srcFolder)
@@ -75,11 +59,16 @@ def syncMP3content(SrcDir, SrcFolders, DestDir, DestFolders, PicSize, SyncMode, 
                 os.mkdir(DestDir+srcFolder)
                 DestFolders.append(srcFolder)
 
-            copyNewEpisodes(SrcDir, srcFolder, DestDir, DestFolders, PicSize, SyncMode, JustCopy)
+            copyNewEpisodes(SrcDir, srcFolder, DestDir, DestFolders, PicSize, SyncMode, JustCopy, CreatePLs, plCreator)
+
+    if(CreatePLs == "True"):
+        plCreator.createPLsForPodcasts(DestDir, DestFolders, PLsDestDir)
 
 #-------------------------------------------------------------------------------
 ### Check source and device and copy episode if not on device   ################
-def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, JustCopy):
+def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, JustCopy, CreatePLs, PlCreator:PlaylistGenerator):
+#    if(CreatePLs == "True"):
+#        plCreator =  PlaylistGenerator()
     for destFolder in DestFolders:
         ### if podcast directory exists on device or 
         if(destFolder == SrcFolder):
@@ -198,6 +187,12 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, 
                                     print("        ### mp3 tag invalid, just copying: "+srcContent)
      
                         shutil.copyfile(SrcDir+SrcFolder+"/"+"temp.sps", DestDir+destFolder+"/"+srcContent)
+                        if(CreatePLs == "True"):
+                            tempAudiofile= eyed3.load(DestDir+destFolder+"/"+srcContent)
+                            episodePath = DestDir+destFolder+"/"+srcContent
+                            episodeTitle = tempAudiofile.tag.title
+                            PlCreator.addToPLOfNewPodcats(episodePath, episodeTitle)
+
                         os.remove(SrcDir+SrcFolder+"/"+"temp.sps")
 
             if(noUpdateForThisPodcast):  

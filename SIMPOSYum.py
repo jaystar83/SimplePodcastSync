@@ -32,7 +32,7 @@ if __name__ == "__main__":
             input("\r\n### -> EXIT\r\nPress Enter to close ...")
             sys.exit(0)
 
-    ### Read out elements in source folder  ############################
+    ### Read out elements in destination folder  #######################
     destFolders = MP3Sync.readFolderObjects(config.DestDir)
         
     ### Check if elements available in source folder    ################
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     ####################################################################
     ### Sync with source    ############################################
     ####################################################################
-    MP3Sync.syncMP3content(config.SrcDir, srcFolders, config.DestDir, destFolders, config.CoverSize, config.SyncMode, config.JustCopy)
+    MP3Sync.syncMP3content(config.SrcDir, srcFolders, config.DestDir, destFolders, config.CoverSize, config.SyncMode, config.JustCopy,config.CreatePlaylist, config.PlaylistDestinationPath)
 
     input("\r\n### FINISHED\r\nPress Enter to close ...")
     sys.exit(0)

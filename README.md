@@ -25,3 +25,14 @@ Simple script / executable to synchronise podcasts with the mp3 player ( - Pytho
 * Copy the folder *SIMPOSYum_EXE* to you local folder
 * Configure the *SIMPOSYum_Setup.json* (see above)
 * for easy usage: Right Click - Send to - Desktop (Create shortcuts of *.exe files)
+
+### Addotional Pythondependencies
+* pip
+  * python --version
+  * py -m ensurepip --upgrade
+  * python -m pip --version
+* PIL
+  * python3 -m pip install --upgrade pip
+  * python3 -m pip install --upgrade Pillow
+* eyed3
+  * python3 -m pip install --upgrade eyeD3 python-magic-bin
