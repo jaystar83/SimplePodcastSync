@@ -44,18 +44,18 @@ def syncMP3content(SrcDir, SrcFolders, DestDir, DestFolders, PicSize, SyncMode, 
         ### 1. Check whether source folder contains epidsodes
         if(srcFolderContent == 0 or ( True == ( (len(srcFolderContent)==1) and srcFolderContent[0][len(srcFolderContent[0])-1] == "g") ) ):
             ### 1.1 No Epsiodes in source folder
-            print("    ### EMPTY source folder")
+            print("###---- EMPTY source folder")
             if(SyncMode == "strict"):
                 if(checkPath(DestDir+srcFolder)==True):
                     deletFolder(DestDir, srcFolder)
             else:
-                print("    ### NOTHING to synchronise")
+                print("###---- NOTHING to synchronise")
 
         ### 2. Episodes available -> Synching
         else:
             ### 2.1 If Source does NOT exist on device -> create 
             if(checkPath(DestDir+srcFolder)==False):
-                print("    ### CREATING episodes folder on device")
+                print("###---- CREATING episodes folder on device")
                 os.mkdir(DestDir+srcFolder)
                 DestFolders.append(srcFolder)
 
@@ -98,7 +98,7 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, 
                 else: 
                     if(srcContent[len(srcContent)-1] == "3"):   # is mp3 file?
                         noUpdateForThisPodcast = False
-                        print("    ### COPY: "+srcContent)
+                        print("###---- COPY: "+srcContent)
                         ### Create temp file
                         shutil.copyfile(SrcDir+SrcFolder+"/"+srcContent, SrcDir+SrcFolder+"/"+"temp.sps")
                         tempAudiofile= eyed3.load(SrcDir+SrcFolder+"/"+"temp.sps")
@@ -113,11 +113,11 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, 
 
                                     #change file info
                                     tempAudiofile.tag.artist = SrcFolder
-                                    print("        ### Update artist: "+str(tempAudiofile.tag.artist))
+                                    print("###-------- Update artist: "+str(tempAudiofile.tag.artist))
                                     tempAudiofile.tag.album = SrcFolder
-                                    print("        ### Update album: "+str(tempAudiofile.tag.album))
+                                    print("###-------- Update album: "+str(tempAudiofile.tag.album))
                                     tempAudiofile.tag.title = srcContent[:len(srcContent)-4]
-                                    print("        ### Update title: "+str(tempAudiofile.tag.title))
+                                    print("###-------- Update title: "+str(tempAudiofile.tag.title))
                                     tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
                                     tempAudiofile.tag.save()
 
@@ -130,30 +130,30 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, 
                                     trackGenre = ""
                                     if(tempAudiofile.tag.artist == None or tempAudiofile.tag.artist == "" or tempAudiofile.tag.artist == ";"):
                                         trackArtis = SrcFolder
-                                        print("        ### Update artist: "+trackArtis)
+                                        print("###-------- Update artist: "+trackArtis)
                                     else:
                                         trackArtis = tempAudiofile.tag.artist
 
                                     if(tempAudiofile.tag.album == None or tempAudiofile.tag.album == "" or tempAudiofile.tag.album == ";"):
                                         trackAlbum = SrcFolder
-                                        print("        ### Update album: "+trackAlbum)
+                                        print("###-------- Update album: "+trackAlbum)
                                     else:
                                         trackAlbum = tempAudiofile.tag.album
 
                                     if(tempAudiofile.tag.title == None or tempAudiofile.tag.title == "" or tempAudiofile.tag.title == ";"):
                                         trackTitle = srcContent[:len(srcContent)-4]
-                                        print("        ### Update title: "+trackTitle)
+                                        print("###-------- Update title: "+trackTitle)
                                     else:
                                         trackTitle = tempAudiofile.tag.title
 
                                     if(tempAudiofile.tag.track_num[0] == None or tempAudiofile.tag.track_num[0] == "" or tempAudiofile.tag.track_num[0] == ";"):
-                                        print("        ### No tack number in: "+trackTitle)
+                                        print("###-------- No tack number in: "+trackTitle)
                                     else:
                                         trackNo = int(tempAudiofile.tag.track_num[0])
 
                                     if(tempAudiofile.tag.genre == None or tempAudiofile.tag.genre == "" or tempAudiofile.tag.genre == ";"):
                                         trackGenre = "Podcast"
-                                        print("        ### Update genre: "+trackGenre)
+                                        print("###-------- Update genre: "+trackGenre)
                                     else:
                                         trackGenre = tempAudiofile.tag.genre
 
@@ -169,24 +169,25 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, 
                             except:
                                 try:
                                     tempAudiofile.initTag()
-                                    print("        ### mp3 tag invalid -> creating tag information for "+srcContent)
+                                    print("###-------- mp3 tag invalid -> creating tag information for "+srcContent)
 
                                     #change mp3 file album cover if "folder.jpg/png" is available
                                     #tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open('cover.jpg','rb').read(), 'image/jpeg')
 
                                     #change file info
                                     tempAudiofile.tag.artist = SrcFolder
-                                    print("            ### Update artist: "+str(tempAudiofile.tag.artist))
+                                    print("###------------ Update artist: "+str(tempAudiofile.tag.artist))
                                     tempAudiofile.tag.album = SrcFolder
-                                    print("            ### Update album: "+str(tempAudiofile.tag.album))
+                                    print("###------------ Update album: "+str(tempAudiofile.tag.album))
                                     tempAudiofile.tag.title = srcContent[:len(srcContent)-4]
-                                    print("            ### Update title: "+str(tempAudiofile.tag.title))
+                                    print("###------------ Update title: "+str(tempAudiofile.tag.title))
                                     tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
                                     tempAudiofile.tag.save()
                                 except:
-                                    print("        ### mp3 tag invalid, just copying: "+srcContent)
+                                    print("###------------mp3 tag invalid, just copying: "+srcContent)
      
                         shutil.copyfile(SrcDir+SrcFolder+"/"+"temp.sps", DestDir+destFolder+"/"+srcContent)
+                        
                         if(CreatePLs == "True"):
                             tempAudiofile= eyed3.load(DestDir+destFolder+"/"+srcContent)
                             episodePath = DestDir+destFolder+"/"+srcContent
@@ -196,7 +197,7 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, 
                         os.remove(SrcDir+SrcFolder+"/"+"temp.sps")
 
             if(noUpdateForThisPodcast):  
-                print("    ### NO NEW EPISODES")
+                print("###---- NO NEW EPISODES")
      
             if(tempFolderPic != ""):
                 os.remove(tempFolderPic)
@@ -216,7 +217,7 @@ def cleanupFolder(SrcDir, SrcFolder, DestDir, DestFolder):
                     break
             else:
                 
-                print("    #### DELETING: " + destContent)
+                print("###---- DELETING: " + destContent)
                 destFile = DestDir+DestFolder+"/"+destContent
                 filename, extension = os.path.splitext(destFile)
                 
@@ -233,17 +234,17 @@ def cleanupFolder(SrcDir, SrcFolder, DestDir, DestFolder):
 def cleanupDevice(SrcDir, SrcFolders, DestDir, DestFolders):
     print("\r\n### Cleaning up device:") 
     for destFolder in DestFolders:
-        print('    ### CLEANUP: '+destFolder)
+        print('###---- CLEANUP: '+destFolder)
         ### 1. If source folder not exists -> delete destination folder
         if(checkPath(SrcDir+destFolder)==False):
-            print("        ### DELETING: Source content not available -> deleting directory on device")
+            print("###-------- DELETING: Source content not available -> deleting directory on device")
             shutil.rmtree(DestDir+destFolder)
         else:
             destFolderContent = readFolderObjects(DestDir+destFolder)        
             srcFolderContent = readFolderObjects(SrcDir+destFolder)
             ### 2. If no content in source folder -> delete destination folder                             "g" -> jpg / png
             if(srcFolderContent == 0 or ( (len(srcFolderContent)==1) and srcFolderContent[0][len(srcFolderContent[0])-1] == "g") ):
-                print("        ### DELETING: No source content available -> deleting directory on device")
+                print("###-------- DELETING: No source content available -> deleting directory on device")
                 shutil.rmtree(DestDir+destFolder)
 
             ### 3. Check content: If destination episodes not in source -> delete
@@ -259,7 +260,7 @@ def cleanupDevice(SrcDir, SrcFolders, DestDir, DestFolders):
 #-------------------------------------------------------------------------------
 ### Delet the given folder and wirte inb output ################################
 def deletFolder(Dir, Folder):
-    print("    ### DELETING: " + Folder)
+    print("###---- DELETING: " + Folder)
     shutil.rmtree(Dir+Folder)
 
 

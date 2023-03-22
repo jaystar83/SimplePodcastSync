@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import os
+import sys
 from .Setup import checkPath
 from .fileOperations import readFolderObjects
 
@@ -17,47 +18,52 @@ class PlaylistGenerator():
     newPlString: str =  m3uPL_Start
 
     def createPLsForPodcasts(self, DestDir, DestFolders, PLDestFolder):
-        playlists = readFolderObjects(PLDestFolder)
-        if(len(playlists) > 0):
-            print("### DELETING OLD PLAYLISTS")
-        for pl in playlists:
-            if pl[0] == "#":
-                print("    ### DELETING: " + PLDestFolder + pl)
-                os.remove(PLDestFolder + pl)
+        if(checkPath(PLDestFolder) == False):
+            print("\n### Playlist destination path not found: "+PLDestFolder)
+            input("\r\n### -> EXIT\r\nPress Enter to close ...")
+            sys.exit(0)
 
-        if(len(DestFolders) > 0):
-            print("### CREATING NEW PLAYLISTS")
+        else:
+            playlists = readFolderObjects(PLDestFolder)
+            if(len(playlists) > 0):
+                print("\n### DELETING OLD PLAYLISTS")
+            for pl in playlists:
+                if pl[0] == "#":
+                    print("###---- DELETING: " + PLDestFolder + pl)
+                    os.remove(PLDestFolder + pl)
 
-        for destFolder in DestFolders:
-            plName :str = "#" + destFolder + ".m3u"
-            plContent :str = self.m3uPL_Start
-            episodeList = readFolderObjects(DestDir+destFolder)
-            import eyed3 
-            
-            createPlFlag = False
+            if(len(DestFolders) > 0):
+               
+                for destFolder in DestFolders:
+                    plName :str = "#" + destFolder + ".m3u"
+                    plContent :str = self.m3uPL_Start
+                    episodeList = readFolderObjects(DestDir+destFolder)
+                    import eyed3 
+                    
+                    createPlFlag = False
+                    print("\n###---- CREATING: " + plName)
 
-            for episode in episodeList:
-                if(episode[len(episode)-1] == "3"):
-                    createPlFlag = True
-                    tempAudiofile= eyed3.load(DestDir+destFolder+"/"+episode)
-                    plContent = plContent + "\n" + self.m3uPL_Info + tempAudiofile.tag.title
-                    plContent = plContent + "\n" + DestDir+destFolder+"/"+episode
+                    for episode in episodeList:
+                        if(episode[len(episode)-1] == "3"):
+                            createPlFlag = True
+                            tempAudiofile= eyed3.load(DestDir+destFolder+"/"+episode)
+                            print("###-------- ADDING: " + tempAudiofile.tag.title)
+                            plContent = plContent + "\n" + self.m3uPL_Info + tempAudiofile.tag.title
+                            plContent = plContent + "\n" + DestDir+destFolder+"/"+episode
 
-            if(createPlFlag):
-                print("    ### CREATING: " + plName)
-                plContentCompleted = plContent.replace("/", "\\")
-                f = open(PLDestFolder+plName , "w")
+                    if(createPlFlag):
+                        plContentCompleted = plContent.replace("/", "\\")
+                        plContentCompleted = plContentCompleted + "\n"
+                        f = open(PLDestFolder+plName , "w")
+                        f.write(plContentCompleted)
+                        f.close()
+
+                print("###---- CREATING: " + self.m3uPL_NewPCs )
+                plContentCompleted = self.newPlString.replace("/", "\\")
+                plContentCompleted = plContentCompleted + "\n"
+                f = open(PLDestFolder+self.m3uPL_NewPCs , "w")   
                 f.write(plContentCompleted)
                 f.close()
-
-        print("    ### CREATING: " + self.m3uPL_NewPCs )
-        plContentCompleted = self.newPlString.replace("/", "\\")
-        f = open(PLDestFolder+self.m3uPL_NewPCs , "w")   
-        f.write(plContentCompleted)
-        f.close()
-
-
-        #TBD
 
     def addToPLOfNewPodcats(self, EpisodePath, EpisodeTitle):
         self.newPlString = self.newPlString + "\n" + self.m3uPL_Info + EpisodeTitle

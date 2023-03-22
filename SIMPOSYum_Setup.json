@@ -15,5 +15,5 @@
     "__comment" : "create mu3 playlist, True: Ceate, False: Do NOT create",
     "CreatePlaylist": "True",
     "__comment" : "Playlist destination path e.g. D:/Temp/Device/",
-    "PlaylistDestinationPath": "D:/Temp/Device/"
+    "PlaylistDestinationPath": "D:/Temp/Device"
 }
