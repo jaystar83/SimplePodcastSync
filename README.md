@@ -37,5 +37,5 @@ Simple script / executable to synchronise podcasts with the mp3 player ( - Pytho
 * eyed3
   * python3 -m pip install --upgrade eyeD3 python-magic-bin
 
-* pyintaller
+* pyinstaller
   * python3 -m pip install --upgrade pyinstaller
