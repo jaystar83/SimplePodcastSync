@@ -20,14 +20,20 @@ class SetupData():
     SyncMode:str = ""
     CoverSize:int = 0
     JustCopy:str = ""
+    CreatePlaylist:str = ""
+    PlaylistDestinationPath:str = ""
+
     
-    def init(self, SrcDir, DestDir, SyncMode, CoverSize, JustCopy):       
+    def init(self, SrcDir, DestDir, SyncMode, CoverSize, JustCopy, CreatePlaylist, PlaylistDestinationPath):
+
         self.SrcDir = SrcDir
         self.DestDir = DestDir
         self.SyncMode = SyncMode
         self.CoverSize = CoverSize
         self.JustCopy = JustCopy
-  
+        self.CreatePlaylist = CreatePlaylist
+        self.PlaylistDestinationPath = PlaylistDestinationPath
+
     def load(self, Filename, WinActive):
         data = SetupData()
         data = readSetupData(Filename, WinActive)
@@ -37,14 +43,15 @@ class SetupData():
             self.SyncMode = data.SyncMode
             self.CoverSize = data.CoverSize
             self.JustCopy = data.JustCopy
+            self.CreatePlaylist = data.CreatePlaylist
+            self.PlaylistDestinationPath = data.PlaylistDestinationPath
 
         return errorCode
 
     def save(self, Filename, WinActive):
         writeSetupData(self, Filename, WinActive)
         return errorCode
-        
-        
+
   
 ### Check if source path available  ################################
 def checkPath(dirname):
@@ -70,6 +77,7 @@ def readSetupData(FileName, WinActive):
             jsonData = json.load(json_file)
             data.SrcDir = jsonData['SourcePath']
             data.DestDir = jsonData['DestinationPath']
+            data.PlaylistDestinationPath = jsonData['PlaylistDestinationPath']
             ### Check if filename are available ################################
             if(data.SrcDir == "" or data.SrcDir == 0):
                 if(WinActive):
@@ -87,16 +95,27 @@ def readSetupData(FileName, WinActive):
                     input("\r\n### -> EXIT\r\nPress Enter to close ...")
                     sys.exit(0)
 
+            if(data.PlaylistDestinationPath == "" or data.PlaylistDestinationPath == 0):
+                if(WinActive):
+                    errorCode = "E_PlaylistPathInvalid"
+                else:
+                    print("### Playlist path invalid!")
+                    input("\r\n### -> EXIT\r\nPress Enter to close ...")
+                    sys.exit(0)
+
             ### Check end of pathes are valid and correct   ####################
             if data.SrcDir[len(data.SrcDir)-1] != "/":
                 data.SrcDir = data.SrcDir+"/"
             if data.DestDir[len(data.DestDir)-1] != "/":
                 data.DestDir = data.DestDir+"/"
-
+            if data.PlaylistDestinationPath[len(data.PlaylistDestinationPath)-1] != "/":
+                data.PlaylistDestinationPath = data.PlaylistDestinationPath+"/"
+            
             data.SyncMode = jsonData['Mode']
             data.CoverSize = int(jsonData['AlbumCoverSize'])
             data.JustCopy = jsonData['JustCopy']
-        
+            data.CreatePlaylist = jsonData['CreatePlaylist']
+
         json_file.close()
         return data
 
@@ -116,15 +135,16 @@ def writeSetupData(Data, FileName, WinActive):
         
         json_file.close()
 
-        jsonData['SourcePath'] = Data.SrcDir 
+        jsonData['SourcePath'] = Data.SrcDir
         jsonData['DestinationPath'] = Data.DestDir 
             
         ### Check end of pathes are valid and correct   ####################
         jsonData['Mode'] = Data.SyncMode
         jsonData['AlbumCoverSize'] = Data.CoverSize
         jsonData['JustCopy'] = Data.JustCopy
-
-
+        jsonData['CreatePlaylist'] = Data.CreatePlaylist
+        jsonData['PlaylistDestinationPath'] = Data.PlaylistDestinationPath
+        
         jsonData['__comment'] = "configuerd with Setup Gui"
 
         with open(FileName, 'w') as outfile:

@@ -1,15 +1,1 @@
-{
-    "__comment" : "SourcePath is the folder which contains the podcast folders",
-    "__comment" : "SourcePat_temp D:/Temp/Source/gPodder/Downloads",
-    "SourcePath": "D:/Temp/Source/gPodder/Downloads",
-    "__comment" : "DestinationPath is the podcast folder on the device ",
-    "__comment" : "DestinationPath_temp D:/Temp/Device/Podcasts",
-    "DestinationPath": "D:/Temp/Device/Podcasts",
-    "__comment" : "Mode == strict -> raw syn -> also deleting files",
-    "__comment" : "Mode == smooth -> only new files are copied",
-    "Mode": "strict",
-    "__comment" : "AlbumCoverSize Y x Y pixel e.g. 600x600",
-    "AlbumCoverSize": 600,
-    "__comment" : "AlbumCoverSize Y x Y pixel e.g. 600x600",
-    "JustCopy": "False"
-}
+{"__comment": "configuerd with Setup Gui", "SourcePath": "D:/Temp/Source/gPodder/Downloads/", "DestinationPath": "D:/Temp/Device/Podcasts/", "Mode": "strict", "AlbumCoverSize": 128, "JustCopy": "False", "CreatePlaylist": "True", "PlaylistDestinationPath": "D:/Temp/Device/"}
