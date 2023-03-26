@@ -52,6 +52,34 @@ if (__name__ == "__main__"):
                     return 0                
         return -1
 
+    def getPlaylistDestFolderPath():
+        selectedPlDestPath = str(filedialog.askdirectory())
+        if(selectedPlDestPath == "" or selectedPlDestPath == 0):
+            return -1
+        else:
+            configTemp = Setup.SetupData()
+            errorCode = configTemp.load(tempConfigFileName, WinActive=True)
+            check_LoadConfigError(errorCode, WinActive=True)
+            if(errorCode == "E_OK"):
+                configTemp.PlaylistDestinationPath = selectedPlDestPath
+                errorCode = configTemp.save(tempConfigFileName, WinActive=True)
+                check_SaveConfigError(errorCode,WinActive=True)
+                if(errorCode == "E_OK"):
+                    tempPlDestFolderLabel.config(text = " -> " + selectedPlDestPath)
+                    return 0                
+        return -1
+
+    def plCreationModeUpdate():
+        configTemp = Setup.SetupData()
+        errorCode = configTemp.load(tempConfigFileName, WinActive=True)
+        check_LoadConfigError(errorCode, WinActive=True)
+        if(errorCode == "E_OK"):
+            configTemp.CreatePlaylist = tempPlCreationMode.get()
+            errorCode = configTemp.save(tempConfigFileName, WinActive=True)
+            check_SaveConfigError(errorCode,WinActive=True)
+            if(errorCode == "E_OK"):
+                tempPlaylistCreationModeLabel.config(text=" -> Selected Playlist creation mode: "+tempPlCreationMode.get())
+
     def syncModeUpdate():
         configTemp = Setup.SetupData()
         errorCode = configTemp.load(tempConfigFileName, WinActive=True)
@@ -72,7 +100,8 @@ if (__name__ == "__main__"):
             check_LoadConfigError(errorCode, WinActive=True)
             if(errorCode == "E_OK"):
                 confSrcFolderLabel.config(text= 'Configured source -> ' + configTemp.SrcDir)
-                confDestFolderLabel.config(text= 'Configured source -> ' + configTemp.DestDir)
+                confDestFolderLabel.config(text= 'Configured destination -> ' + configTemp.DestDir)
+                confPlDestFolderLabel.config(text= 'Configured Playlist destination -> ' + configTemp.PlaylistDestinationPath)
                 confSyncModeLabel.config(text='Configured synchronisation mode -> ' + configTemp.SyncMode)
         else:
             messagebox.showerror("Save config file error", ret)
@@ -116,7 +145,7 @@ if (__name__ == "__main__"):
     win = tk.Tk()
     win.title('SIMPOSYum Config GUI')
     win.iconbitmap('SPS_Config_Small.ico')
-    win.geometry("400x400")
+    win.geometry("600x450")
 
     selectedSrcPath = config.SrcDir
     selectedDestPath = config.DestDir
@@ -141,7 +170,7 @@ if (__name__ == "__main__"):
     confSrcFolderLabel.pack(side=LEFT)
 
     frame11 = tk.Frame(win, bd=2)
-    frame11.place(relx=0.05, rely=0.1, relwidth=0.9, relheight=0.15)
+    frame11.place(relx=0.05, rely=0.10, relwidth=0.9, relheight=0.15)
 
     tempSrcFolderPath = tk.StringVar(frame11, config.SrcDir)
 
@@ -155,35 +184,69 @@ if (__name__ == "__main__"):
 ################################################################
 
     frame2 = tk.Frame(win, bd=2)
-    frame2.place(relx=0.05, rely=0.25, relwidth=0.9, relheight=0.05)
-    confSrcFolderLabel.config(text= 'Configured source -> ' + config.SrcDir)
+    frame2.place(relx=0.05, rely=0.20, relwidth=0.9, relheight=0.05)
 
     confDestFolderLabel = tk.Label(frame2, text= 'Configured destination -> ' + config.DestDir)
     confDestFolderLabel.pack(side=LEFT)
 
     frame22 = tk.Frame(win, bd=2)
-    frame22.place(relx=0.05, rely=0.30, relwidth=0.9, relheight=0.15)
+    frame22.place(relx=0.05, rely=0.25, relwidth=0.9, relheight=0.15)
     
-    tempDestFolderPath = tk.StringVar(frame22, config.DestDir)
+    frame23 = tk.Frame(win, bd=2)
+    frame23.place(relx=0.05, rely=0.33, relwidth=0.9, relheight=0.05)
+
+    confPlDestFolderLabel = tk.Label(frame23, text= 'Configured Playlist destination -> ' + config.PlaylistDestinationPath)
+    confPlDestFolderLabel.pack(side=LEFT)
+
+    frame24 = tk.Frame(win, bd=2)
+    frame24.place(relx=0.05, rely=0.38, relwidth=0.9, relheight=0.15)
+    
+    tempPlDestFolderPath = tk.StringVar(frame24, config.PlaylistDestinationPath)
 
     btnFindDest = tk.Button(frame22, text="Browse Folder",command=getDestFolderPath)
     tempDestFolderLabel = tk.Label(frame22, text=' -> '+config.DestDir)
     btnFindDest.grid(row=1, column=0)
     tempDestFolderLabel.grid(row=1,column=1)
 
+    btnFindPLDest = tk.Button(frame24, text="Browse Folder",command=getPlaylistDestFolderPath)
+    tempPlDestFolderLabel = tk.Label(frame24, text=' -> '+config.PlaylistDestinationPath)
+    btnFindPLDest.grid(row=1, column=0)
+    tempPlDestFolderLabel.grid(row=1,column=1)
+
+    frame25 = tk.Frame(win)
+    frame25.place(relx=0.05, rely=0.47, relwidth=0.9, relheight=0.05 )
+    confSyncModeLabel = tk.Label(frame25, text= 'Configured Playlist creation mode -> ' + config.CreatePlaylist)
+    confSyncModeLabel.pack(side=LEFT)
+
+    frame26 = tk.Frame(win)
+    frame26.place(relx=0.05, rely=0.515, relwidth=0.9, relheight=0.15)
+
+    tempPlCreationMode = tk.StringVar(frame26, config.CreatePlaylist)
+    tempPlaylistCreationModeLabel = tk.Label(frame26, text=" - Selected Playlist creation mode: "+tempPlCreationMode.get())
+            
+    check_button_PlCr = tk.Checkbutton(frame26, text="True", var=tempPlCreationMode, onvalue="True", offvalue="False", command=plCreationModeUpdate)
+    if(tempPlCreationMode.get()=="True"):
+        check_button_PlCr.select()
+    else:
+        check_button_PlCr.deselect()
+    check_button_PlCr.pack(side=LEFT)
+    tempPlaylistCreationModeLabel.pack(side=LEFT)
+
+
+
 ################################################################
 ### Frame 3 - Select SyncMode   ################################
 ################################################################
     frame3 = tk.Frame(win)
-    frame3.place(relx=0.05, rely=0.5, relwidth=0.9, relheight=0.05 )
+    frame3.place(relx=0.05, rely=0.65, relwidth=0.9, relheight=0.05 )
     confSyncModeLabel = tk.Label(frame3, text= 'Configured synchronisation mode -> ' + config.SyncMode)
     confSyncModeLabel.pack(side=LEFT)
 
     frame33 = tk.Frame(win)
-    frame33.place(relx=0.05, rely=0.55, relwidth=0.9, relheight=0.15)
+    frame33.place(relx=0.05, rely=0.695, relwidth=0.9, relheight=0.15)
 
     tempSyncMode = tk.StringVar(frame33, config.SyncMode)
-    tempSyncModeLabel = tk.Label(frame33, text=" - Selected SyncMode -> "+tempSyncMode.get())
+    tempSyncModeLabel = tk.Label(frame33, text=" - Selected SyncMode: "+tempSyncMode.get())
             
     check_button = tk.Checkbutton(frame33, text="strict", var=tempSyncMode, onvalue="strict", offvalue="smooth", command=syncModeUpdate)
     if(tempSyncMode.get()=="strict"):

@@ -43,13 +43,14 @@ class PlaylistGenerator():
                     createPlFlag = False
                     print("\n###---- CREATING: " + plName)
 
-                    for episode in episodeList:
-                        if(episode[len(episode)-1] == "3"):
-                            createPlFlag = True
-                            tempAudiofile= eyed3.load(DestDir+destFolder+"/"+episode)
-                            print("###-------- ADDING: " + tempAudiofile.tag.title)
-                            plContent = plContent + "\n" + self.m3uPL_Info + tempAudiofile.tag.title
-                            plContent = plContent + "\n" + DestDir+destFolder+"/"+episode
+                    if(len(episodeList) > 0):
+                        for episode in episodeList:
+                            if(episode[len(episode)-1] == "3"):
+                                createPlFlag = True
+                                tempAudiofile= eyed3.load(DestDir+destFolder+"/"+episode)
+                                print("###-------- ADDING: " + tempAudiofile.tag.title)
+                                plContent = plContent + "\n" + self.m3uPL_Info + tempAudiofile.tag.title
+                                plContent = plContent + "\n" + DestDir+destFolder+"/"+episode
 
                     if(createPlFlag):
                         plContentCompleted = plContent.replace("/", "\\")

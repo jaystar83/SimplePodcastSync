@@ -4,16 +4,16 @@
     "SourcePath": "C:/Users/jayst/Documents/gPodder/Downloads/",
     "__comment" : "DestinationPath is the podcast folder on the device ",
     "__comment" : "DestinationPath_temp D:/Temp/Device/Podcasts",
-    "DestinationPath": "E:/Podcasts",
+    "DestinationPath": "D:/Temp/Device/Podcasts",
     "__comment" : "Mode == strict -> raw syn -> also deleting files",
     "__comment" : "Mode == smooth -> only new files are copied",
     "Mode": "strict",
     "__comment" : "AlbumCoverSize Y x Y pixel e.g. 600x600",
-    "AlbumCoverSize": 256,
+    "AlbumCoverSize": 128,
     "__comment" : "True => No update of mp3 Tag infos",
     "JustCopy": "False",
     "__comment" : "create mu3 playlist, True: Ceate, False: Do NOT create",
     "CreatePlaylist": "True",
     "__comment" : "Playlist destination path",
-    "PlaylistDestinationPath": "E:/"
+    "PlaylistDestinationPath": "D:/Temp/Device/"
 }
