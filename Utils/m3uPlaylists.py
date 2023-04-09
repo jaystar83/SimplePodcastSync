@@ -41,9 +41,9 @@ class PlaylistGenerator():
                     import eyed3 
                     
                     createPlFlag = False
-                    print("\n###---- CREATING: " + plName)
 
-                    if(len(episodeList) > 0):
+                    if( (len(episodeList) != False) and (len(episodeList) > 0) ):
+                        print("\n###---- CREATING: " + plName)
                         for episode in episodeList:
                             if(episode[len(episode)-1] == "3"):
                                 createPlFlag = True
@@ -59,7 +59,7 @@ class PlaylistGenerator():
                         f.write(plContentCompleted)
                         f.close()
 
-                print("###---- CREATING: " + self.m3uPL_NewPCs )
+                print("\n###---- CREATING: " + self.m3uPL_NewPCs )
                 plContentCompleted = self.newPlString.replace("/", "\\")
                 plContentCompleted = plContentCompleted + "\n"
                 f = open(PLDestFolder+self.m3uPL_NewPCs , "w")   
