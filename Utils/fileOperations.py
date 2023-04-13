@@ -8,7 +8,8 @@ def readFolderObjects(dirname, otype = "all"):
     if (os.path.exists(dirname) == False or
         os.path.isdir(dirname) == False or
         os.access(dirname, os.R_OK) == False):
-        return False
+#        return False
+        return []
     else:
         objects = os.listdir(dirname)
         result = []
