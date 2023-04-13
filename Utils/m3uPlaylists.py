@@ -42,7 +42,6 @@ class PlaylistGenerator():
                     
                     createPlFlag = False
 
-#                    if( (len(episodeList) != False) and (len(episodeList) > 0) ):
                     if( len(episodeList) > 0 ):
                         print("\n###---- CREATING: " + plName)
                         for episode in episodeList:
