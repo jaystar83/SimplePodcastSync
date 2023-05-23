@@ -119,7 +119,7 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, 
                                     tempAudiofile.tag.title = srcContent[:len(srcContent)-4]
                                     print("###-------- Update title: "+str(tempAudiofile.tag.title))
                                     tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
-                                    tempAudiofile.tag.save()
+                                    tempAudiofile.tag.save(version=(2,3,0))
 
                                 else:
                                     #change file info
@@ -164,7 +164,7 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, 
                                     tempAudiofile.tag.track_num = trackNo
                                     tempAudiofile.tag.genre = trackGenre
                                     tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
-                                    tempAudiofile.tag.save()
+                                    tempAudiofile.tag.save(version=(2,3,0))
 
                             except:
                                 try:
@@ -182,7 +182,7 @@ def copyNewEpisodes(SrcDir, SrcFolder, DestDir, DestFolders, PicSize, SyncMode, 
                                     tempAudiofile.tag.title = srcContent[:len(srcContent)-4]
                                     print("###------------ Update title: "+str(tempAudiofile.tag.title))
                                     tempAudiofile.tag.images.set(ImageFrame.FRONT_COVER, open(tempFolderPic,'rb').read(), 'image/jpeg')
-                                    tempAudiofile.tag.save()
+                                    tempAudiofile.tag.save(version=(2,3,0))
                                 except:
                                     print("###------------mp3 tag invalid, just copying: "+srcContent)
      
