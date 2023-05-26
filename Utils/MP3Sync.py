@@ -34,8 +34,7 @@ from eyed3.id3.frames import ImageFrame # to change mp3 file album pic
 #-------------------------------------------------------------------------------
 ### Synchronising the MP3 content in source with the device ####################
 def syncMP3content(SrcDir, SrcFolders, DestDir, DestFolders, PicSize, SyncMode, JustCopy, CreatePLs, PLsDestDir):
-    if(CreatePLs == "True"):
-        plCreator =  PlaylistGenerator()
+    plCreator =  PlaylistGenerator()
 
     for srcFolder in SrcFolders:
         print("### SYNC: "+srcFolder)
