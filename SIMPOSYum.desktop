@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Terminal=true
+Type=Application
+Name=Run SIMPOSYum
+Exec=/home/uSER/Programs/SIMPOSYum/RUN_SIMPOSYum.sh
+Icon=/home/uSER/Programs/SIMPOSYum/SIMPOSYum.ico
+Path=/home/uSER/Programs/SIMPOSYum/
