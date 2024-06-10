@@ -6,6 +6,7 @@ USER="YourUserName"
 pyinstaller --onefile --icon=Images/SIMPOSYum.ico SIMPOSYum.py
 
 rm -r "/home/$USER/Programs/SIMPOSYum"
+mkdir "/home/$USER/Programs"
 mkdir "/home/$USER/Programs/SIMPOSYum"
 
 cp "dist/SIMPOSYum" "/home/$USER/Programs/SIMPOSYum/SIMPOSYum"

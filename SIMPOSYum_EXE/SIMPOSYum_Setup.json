@@ -1,7 +1,7 @@
 {
     "__comment" : "SourcePath is the folder which contains the podcast folders",
     "__comment" : "SourcePat_temp D:/Temp/Source/gPodder/Downloads",
-    "SourcePath": "C:/Users/jayst/Documents/gPodder/Downloads/",
+    "SourcePath": "C:/Users/<user>/Documents/gPodder/Downloads/",
     "__comment" : "DestinationPath is the podcast folder on the device ",
     "__comment" : "DestinationPath_temp D:/Temp/Device/Podcasts",
     "DestinationPath": "D:/Temp/Device/Podcasts",
